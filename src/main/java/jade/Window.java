@@ -47,9 +47,11 @@ public class Window {
         switch (newScene){
             case 0:
                 currentScene = new LevelEditorScene();
+                currentScene.init();
                 break;
             case 1:
                 currentScene = new LevelScene();
+                currentScene.init();
                 break;
             default:
                 System.err.println("unknown scene");
@@ -88,6 +90,12 @@ public class Window {
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE );
         glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE );
         glfwWindowHint(GLFW_MAXIMIZED, GLFW_FALSE );
+
+        // Hints to get shader compiler works in mac
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
         // create the window
         glfwWindow = glfwCreateWindow(this.width, height, this.title, NULL, NULL );
