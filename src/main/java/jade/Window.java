@@ -7,6 +7,7 @@ import org.lwjgl.glfw.Callbacks.*;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
+import util.Time;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.opengl.GL11.*;
@@ -22,6 +23,13 @@ public class Window {
     private static Window window = null;
     private long glfwWindow;
 
+    float r ;
+    float g ;
+    float b;
+
+    public static Scene currentScene;
+
+
     private Window(){
         this.width = 1920 /2;
         this.height = 1080/2;
@@ -33,6 +41,19 @@ public class Window {
             Window.window = new Window();
         }
         return window;
+    }
+
+    public static void changeScene(int newScene){
+        switch (newScene){
+            case 0:
+                currentScene = new LevelEditorScene();
+                break;
+            case 1:
+                currentScene = new LevelScene();
+                break;
+            default:
+                System.err.println("unknown scene");
+        }
     }
 
     public void run() {
@@ -92,22 +113,40 @@ public class Window {
         glfwShowWindow(glfwWindow);
 
         GL.createCapabilities();
+
+        Window.changeScene(0);
     }
 
     private void loop() {
+
+        float beginTime = Time.getTime();
+
+        float endTime = Time.getTime();
+
+        float dt = -1f;
 
         while(!glfwWindowShouldClose(glfwWindow)){
             // poll events
             glfwPollEvents();
 
-            glClearColor(0.0f, 1.0f,0.0f, 1.0f);
+            glClearColor(r, g,b, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
+
+        // add lag
+            if (dt >= 0){
+                currentScene.update(dt);
+            }
+
 
             if (KeyListener.isKeyPressed(GLFW_KEY_SPACE)){
                 System.out.println("SPACE KEY is pressed!");
             }
 
             glfwSwapBuffers(glfwWindow);
+
+            endTime = Time.getTime();
+            dt = endTime -beginTime;
+            beginTime = endTime;
 
 
         }
